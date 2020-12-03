@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>&lt; hydra &gt;</title>
+  <script src="./bundle.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="HYDRA">
+  <meta property="og:description" content="live coding networked visuals in the browser">
+  <meta property="og:image"
+    content="https://cdn.glitch.com/9c3a06ab-0731-42ca-a1a3-3a249825d08f%2FScreen%20Shot%202018-06-24%20at%204.47.49%20PM.png?1531889983803">
+  <meta property="og:url" content="https://hydra.ojack.xyz">
+  <meta name="twitter:title" content="HYDRA">
+  <meta name="twitter:description" content="live coding networked visuals in the browser">
+  <meta name="twitter:image"
+    content="https://cdn.glitch.com/9c3a06ab-0731-42ca-a1a3-3a249825d08f%2FScreen%20Shot%202018-06-24%20at%204.47.49%20PM.png?1531889983803">
+  <meta name="twitter:card" content="summary_large_image">
+  <link href="https://fonts.googleapis.com/css?family=Chivo:300,400,700" rel="stylesheet">
+  <link rel="stylesheet" href="./css/fontawesome.css">
+  <link rel="stylesheet" href="./css/codemirror.css">
+  <link rel="stylesheet" href="./css/tomorrow-night-eighties.css">
+  <link rel="stylesheet" href="./css/show-hint.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/modal.css">
+  <link rel="shortcut icon" type="image/png"
+    href="https://cdn.glitch.com/597fe374-3d18-46a5-b99c-ceff1f8ffd79%2Ffavicon.png?1530891352785" />
+  <link rel="stylesheet" href="css/app.css">
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+
+
+  <div id="hydra-ui">
+
+    <canvas id="hydra-canvas">
+    </canvas>
+    <canvas id="audio-canvas">
+    </canvas>
+  </div>
+  <!-- <div id="info-container" >
+     <div id="modal">
+      <div id="modal-header">
+        <div><i class="fas fa-bars icon"></i></div>
+        <div>
+          <i id ="run-icon" class="fas fa-play-circle icon" title="Run all code (ctrl+shift+enter)" aria-hidden="true"></i>
+          <i id="share-icon" title="upload to gallery" class="fas fa-upload icon" aria-hidden="true"></i>
+          <i id="clear-icon" title="clear all" class="fa fa-trash icon" aria-hidden="true"></i>
+          <i id="shuffle-icon" title="show random sketch" class="fas fa-random icon" aria-hidden="true"></i>
+          <i id="mutator-icon" title="make random change" class="fas fa-dice icon" aria-hidden="true"></i>
+          <i id="close-icon" class="fas fa-question-circle icon" aria-hidden="true"></i>
+
+        </div>
+        
+      </div> -->
+  <div class="screen" id="info-container">
+    <div class="container">
+      <div class="visuals">
+        <div class="analysers">
+          <div><span>pulse 1</span><canvas id="pulse" width="182" height="60"></canvas></div>
+          <div><span>pulse 2</span><canvas id="square" width="182" height="60"></canvas></div>
+          <div><span>triangle</span><canvas id="triangle" width="182" height="60"></canvas></div>
+          <div><span>noise</span><canvas id="noise" width="182" height="60"></canvas></div>
+        </div>
+      </div>
+      <div class="searchForm">
+        <input type="text" placeholder="Paste your address here" id="creater_address">
+
+        <input type="text" placeholder="Which NFT do you wanna play? NFT's ID please" id="nft_id">
+        <a class="show_nft">Show NFT</a>
+      </div>
+      <div class="playlist">
+        <!-- <a class="song active" data-index="0">Ode To Joy</a>
+              <a class="song" data-index="1">Super Mario Bros (overworld)</a>
+              <a class="song" data-index="2">The Legend of Zelda (overworld)</a>
+              <a class="song" data-index="3">Pac-Man (intro)</a> -->
+        <!-- <a class="song active" data-index="0">NFT_01</a>
+              <a class="song" data-index="1">NFT_02</a>
+              <a class="song" data-index="2">NFT_03</a>
+              <a class="song" data-index="3">NFT_04</a>  -->
+        <a class="song" data-index="4">ResetDAO 8-bit Music(Noise)</a>
+      </div>
+      <div class="play-wrapper">
+        <a class="play">Play</a>
+        <div>
+          <i id="run-icon" class="fas fa-play-circle icon" title="Run all code (ctrl+shift+enter)"
+            aria-hidden="true"></i>
+          <i id="shuffle-icon" title="show random sketch" class="fas fa-random icon" aria-hidden="true"></i>
+          <i id="mutator-icon" title="make random change" class="fas fa-dice icon" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- </div>
+  </div> -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/0.11.11/Tone.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.9.0/math.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.3.0/dist/web3.min.js" crossorigin="anonymous"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/web3-eth-contract@1.3.0/lib/index.min.js" crossorigin="anonymous"></script> -->
+  <!-- integrity="sha256-nWBTbvxhJgjslRyuAKJHK+XcZPlCnmIAAMixz6EefVk="  -->
+  <script src="js/filters.js"></script>
+  <script src="js/visualize.js"></script>
+  <script src="js/options.js"></script>
+  <script src="js/notes/odetojoy/bass1.js"></script>
+  <script src="js/notes/odetojoy/synth1.js"></script>
+  <script src="js/notes/zelda/bass1.js"></script>
+  <script src="js/notes/zelda/bass2.js"></script>
+  <script src="js/notes/zelda/synth1.js"></script>
+  <script src="js/notes/zelda/synth2.js"></script>
+  <script src="js/notes/pacman/bass1.js"></script>
+  <script src="js/notes/pacman/synth1.js"></script>
+  <script src="js/notes/mario/synth1.js"></script>
+  <script src="js/notes/mario/synth2.js"></script>
+  <script src="js/notes/mario/bass1.js"></script>
+  <script src="js/notes/mario/bass2.js"></script>
+  <script src="js/fileserver.js"></script>
+  <script src="js/songs.js"></script>
+  <script src="js/abi/uniswap.js"></script>
+  <script src="js/abi/nft.js"></script>
+  <script type="text/javascript">
+    const mainnet = 'https://mainnet.infura.io/v3/a3456970132b4579a76f011dc13828c2'
+    const kovan = 'https://kovan.infura.io/v3/a3456970132b4579a76f011dc13828c2'
+    const web3 = new Web3(Web3.givenProvider || mainnet); //'ws://some.local-or-remote.node:8546'
+    const uniAddress = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
+    const nftAddress = "0x1dDAd29492911da7179CAaC28e084232b33845A1"
+
+    var contract = new web3.eth.Contract(uniABI, uniAddress);
+    var nftContract = new web3.eth.Contract(nftABI, nftAddress);
+    console.log("unicontract:", contract)
+    console.log("nftContract:", nftContract)
+    console.log(web3)
+
+
+    let blockAmount = 155
+
+
+
+
+
+    const notes = []
+
+
+    for (var i = 0; i < MarioSynth2.length; i++) {
+      let note = MarioSynth2[i].name
+      if (notes.indexOf(note) > -1) continue
+      notes.push(note)
+    }
+
+    for (var i = 0; i < MarioSynth1.length; i++) {
+      let note = MarioSynth1[i].name
+      if (notes.indexOf(note) > -1) continue
+      notes.push(note)
+    }
+
+    for (var i = 0; i < ZeldaSynth1.length; i++) {
+      let note = ZeldaSynth1[i].name
+      if (notes.indexOf(note) > -1) continue
+      notes.push(note)
+    }
+    //ZeldaSynth1
+    for (var i = 0; i < MarioBass1.length; i++) {
+      let note = MarioBass1[i].name
+      if (notes.indexOf(note) > -1) continue
+      notes.push(note)
+    }
+    for (var i = 0; i < ZeldaSynth2.length; i++) {
+      let note = ZeldaSynth2[i].name
+      if (notes.indexOf(note) > -1) continue
+      notes.push(note)
+    }
+    //     address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
+    // blockHash: "0x94f48e67cec3f5f76c17d4cd6d8be7a8104f567d5e1ab3ac82cd71caea010340"
+    // blockNumber: 22341957
+    // event: "Transfer"
+    // id: "log_89f540ff"
+    // logIndex: 9
+    // raw: {data: "0x00000000000000000000000000000000000000000000000002fabbed60569cbf", topics: Array(3)}
+    // removed: false
+    // returnValues: c {0: "0xFA73472326E0e0128E2CA6CeB1964fd77F4AE78d", 1: "0xC8828ED8Ad6fd765f9b0cc1E140E9A9016A87010", 2: "214690560451452095", from: "0xFA73472326E0e0128E2CA6CeB1964fd77F4AE78d", to: "0xC8828ED8Ad6fd765f9b0cc1E140E9A9016A87010", amount: "214690560451452095"}
+    // signature: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+    // transactionHash: "0x625e6101ef1961d4ddf1cb7c77150125390355068079b70f2209d78433a2931d"
+    // transactionIndex: 1
+    // transactionLogIndex: "0x9"
+    // type: "mined"
+    console.log(notes)
+    //获取当前区块高度
+    //从创世区块0开始遍历
+    //var batch = new web3.BatchRequest();
+    async function throughBlock(blockNumber) {
+      if (!blockNumber) { console.log('blockNumber is 0'); return false; };
+      count = blockNumber
+      while (count > blockNumber - blockAmount) {
+
+        setTimeout(getBlock, 1, count)
+        count--
+      }
+
+    }
+
+    //获取当前区块的信息
+    async function getBlock(blockNumber) {
+      web3.eth.getBlock(blockNumber)
+        .then(
+          function (result) {
+            transactions = result.transactions;
+            for (var i = 0; i < transactions.length; i++) {
+              getTransactions(transactions[i]);
+            }
+          });
+    }
+
+    //获取交易信息
+    async function getTransactions(txh) {
+      web3.eth.getTransaction(txh).then(
+        function (result) {
+          from = result.from;
+          to = result.to;
+          getCode(from);
+          getCode(to);
+        });
+    }
+
+    // 验证地址是否是合约地址
+    async function getCode(address) {
+      if (!address) { return false; };
+      web3.eth.getCode(address).then(
+        function (result) {
+          if (result == '0x') {
+            getBalance(address);
+          };
+        });
+    }
+
+    var times = 0
+    // 获取地址余额
+    async function getBalance(address) {
+      web3.eth.getBalance(address).then(
+        function (result) {
+
+          addressList.push(address)
+          balanceList.push(result)
+          console.log(address + "\t" + result); //地址 余额
+          //};
+          times++
+        });
+    }
+
+
+    //下载文件
+    // downloadTextFile("file", addressList, { type: "text/plain;charset=utf-8" })
+    // function downloadTextFile(name, mobileCode) {
+    //   if (!mobileCode) {
+    //     mobileCode = ''
+    //   }
+    //   // 采用的字符编码格式为“UTF-8”，这样就避免的中文乱码的问题。
+    //   var file = new File([mobileCode], name + ".json", { type: "text/plain;charset=utf-8" })
+    //   saveAs(file)
+    // }
+
+
+  </script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
