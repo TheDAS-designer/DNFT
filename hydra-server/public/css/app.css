@@ -118,6 +118,11 @@ body * {
   background-color: #ffffff3f;
 }
 
+.playWaiting{
+ opacity: 0.5; /*设置蒙版效果*/
+ pointer-events: none; /*禁止鼠标事件*/
+}
+
 .searchForm a {
   margin-top: 5px;
   background-color: #c32727;
