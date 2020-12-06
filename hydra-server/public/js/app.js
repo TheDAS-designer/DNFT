@@ -95,14 +95,18 @@ showNft.addEventListener('click', function () {
   if (nft_id.value && !isNaN(Number(nft_id.value))) {
     console.log('nft_id.value:', nft_id.value)
     songRemoveClass(songSelectors)
-   
+
+    nftContract.methods.getMelodyById(nft_id.value).call().then((result) => { console.log('getMelodyById:', result) })
+
     button.setAttribute("style",'opacity: 0.3;'); 
     nftContract.methods.getDynamicMelodiesById(Number(nft_id.value)).call().then((result) => {
       console.log('getDynamicMelodiesById 0:', result)
       getMelodies(result)
+      songSelectors[0].classList.add('active')
+      setTimeout(function() { button.setAttribute("style",'opacity: 1;');  }, 1000);
     })
-    songSelectors[0].classList.add('active')  
-    setTimeout(function() { button.setAttribute("style",'opacity: 1;');  }, 1000);
+    //songSelectors[0].classList.add('active')  
+    //setTimeout(function() { button.setAttribute("style",'opacity: 1;');  }, 1000);
   }
 
   if (creater_address.value) {
@@ -145,7 +149,8 @@ const yinjie = ['1', '2', '3', '4', '5', '6', '7'] //['C4,D4,G#2']
 const yinjie_1 = ['3','3','4','4','4','5']
 
 //低音
-const yinjie_3 = ['2','2','2','2','3','3','4']
+//const yinjie_3 = ['2','2','2','2','3','3','4']
+const yinjie_3 = ['3','4','3','2','5','4','3']
 //高音
 const yinjie_4 = ['5','6','6','6','6','7','7']
 
